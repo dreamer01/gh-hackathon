@@ -23,10 +23,10 @@ const SignUp = () => {
     try {
       setLoading(true);
       setMessage('');
-      const { error, user } = await signUp({ email, password });
+      const { data } = await signUp({ email, password });
 
-      if (error) {
-        throw error;
+      if (data.aud !== 'authenticated') {
+        throw new Error('Unable to sign up !');
       }
 
       await supabase
@@ -34,8 +34,8 @@ const SignUp = () => {
         .update({
           full_name: name
         })
-        .eq('id', user.id);
-      setUser(user);
+        .eq('id', data.id);
+      setUser(data);
       setLoading(false);
     } catch (e) {
       setMessage(e.message);
